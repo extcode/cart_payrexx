@@ -1,0 +1,95 @@
+{
+    "name": "extcode/cart-payrexx",
+    "type": "typo3-cms-extension",
+    "description": "Shopping Cart(s) for TYPO3 - Payrexx Payment Provider",
+    "homepage": "https://cart.extco.de",
+    "license": [
+        "GPL-2.0+"
+    ],
+    "keywords": [
+        "TYPO3 CMS",
+        "Shopping Cart",
+        "Payment Provider",
+        "Payrexx",
+        "Cart"
+    ],
+    "authors": [
+        {
+            "name": "Daniel Gohlke",
+            "email": "ext.cart@extco.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/extcode/cart_payrexx/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "Extcode\\CartPayrexx\\": "Classes"
+        }
+    },
+    "config": {
+        "vendor-dir": ".build/vendor",
+        "bin-dir": ".build/bin"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "cart_payrexx",
+            "app-dir": ".build",
+            "web-dir": ".build/public"
+        }
+    },
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "typo3/cms-core": "^10.4 || ^11.5",
+        "typo3/cms-extbase": "^10.4 || ^11.5",
+        "extcode/cart": "^8.0",
+        "payrexx/payrexx": "^1.7"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "helmich/typo3-typoscript-lint": "^2.0",
+        "overtrue/phplint": "^1.1",
+        "rector/rector": "^0.11",
+        "phpstan/phpstan": "^0.12.99"
+    },
+    "scripts": {
+        "test:cgl": [
+            ".build/bin/php-cs-fixer fix --config=Build/.php-cs-fixer.dist.php -v --using-cache=no --path-mode=intersection ./"
+        ],
+        "test:cgl:dry-run": [
+            ".build/bin/php-cs-fixer fix --config=Build/.php-cs-fixer.dist.php -v --dry-run --using-cache=no --path-mode=intersection ./"
+        ],
+        "test:php:lint": [
+            ".build/bin/phplint -c Build/phplint.yaml"
+        ],
+        "test:phpstan:analyse": [
+            ".build/bin/phpstan analyse -c Build/phpstan.neon"
+        ],
+        "test:rector:process": [
+            ".build/bin/rector process *"
+        ],
+        "test:rector:process:dry-run": [
+            ".build/bin/rector process * --dry-run"
+        ],
+        "test:typoscript:lint": [
+            ".build/bin/typoscript-lint -c Build/typoscriptlint.yaml Configuration"
+        ],
+        "test:php": [
+            "@test:php:lint"
+        ],
+        "test:all": [
+            "@test:phpstan:analyse",
+            "@test:rector:process",
+            "@test:cgl",
+            "@test:typoscript:lint",
+            "@test:php"
+        ],
+        "post-autoload-dump": [
+            "mkdir -p .build/public/typo3conf/ext/",
+            "[ -L .build/public/typo3conf/ext/cart_payrexx ] || ln -snvf ../../../../. .build/public/typo3conf/ext/cart_payrexx"
+        ]
+    }
+}

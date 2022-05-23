@@ -1,0 +1,39 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Extcode\CartPayrexx\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Widgets/*'
+
+  Extcode\CartPayrexx\EventListener\Order\Payment\ClearCart:
+    arguments:
+      $cartUtility: '@Extcode\Cart\Utility\CartUtility'
+      $parserUtility: '@Extcode\Cart\Utility\ParserUtility'
+      $sessionHandler: '@Extcode\Cart\Service\SessionHandler'
+    tags:
+      - name: event.listener
+        identifier: 'cart-payrexx--order--payment--clear-cart'
+        event: Extcode\Cart\Event\Order\PaymentEvent
+        before: 'cart-payrexx--order--payment--provider-redirect'
+
+  Extcode\CartPayrexx\EventListener\Order\Payment\ProviderRedirect:
+    arguments:
+      $configurationManager: '@TYPO3\CMS\Extbase\Configuration\ConfigurationManager'
+      $persistenceManager: '@TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager'
+      $typoScriptService: '@TYPO3\CMS\Core\TypoScript\TypoScriptService'
+      $cartRepository: '@Extcode\Cart\Domain\Repository\CartRepository'
+      $paymentRepository: '@Extcode\Cart\Domain\Repository\Order\PaymentRepository'
+    tags:
+      - name: event.listener
+        identifier: 'cart-payrexx--order--payment--provider-redirect'
+        event: Extcode\Cart\Event\Order\PaymentEvent
+
+  Extcode\CartPayrexx\EventListener\Order\Finish\Email:
+    class: 'Extcode\Cart\EventListener\Order\Finish\Email'
+    tags:
+      - name: event.listener
+        identifier: 'cart-payrexx--order--finish--email'
+        event: Extcode\CartPayrexx\Event\Order\FinishEvent
